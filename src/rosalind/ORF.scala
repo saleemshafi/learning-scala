@@ -9,7 +9,7 @@ object ORF extends App with RosalindProblem {
 	  var framePattern = """(?:M[^\.]*)\.""".r
 	  for (frame <- frames; 
 			  piece <- framePattern.findAllIn(PROT.encodeDNA(frame));
-			  index <- KMP.getIndexesFromEnd('M', piece))
+			  index <- KMP.getIndexesFromEnd("M", piece))
 	    yield piece.substring(index).init
 	}
   

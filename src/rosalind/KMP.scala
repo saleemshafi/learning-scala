@@ -4,7 +4,7 @@ import Stream._
 
 object KMP extends App with RosalindProblem {
   
-	def getIndexesFromEnd(needle:Char, haystack:String):Stream[Int] = {
+	def getIndexesFromEnd(needle:String, haystack:String):Stream[Int] = {
 	  val lastIndex = haystack.lastIndexOf(needle)
 	  if (lastIndex == -1) empty
 	  else if (lastIndex == 0) lastIndex #:: empty
@@ -12,7 +12,7 @@ object KMP extends App with RosalindProblem {
 	}
   
 	def suffixMatchLength(s:String):Int = 
-	  (for (index <- getIndexesFromEnd(s.last, s.init); 
+	  (for (index <- getIndexesFromEnd(s.takeRight(1), s.init); 
 			  prefix = s.take(index+1);
 			  if (s.endsWith(prefix))) yield prefix) match {
 	  		case Stream() => 0
