@@ -1,6 +1,7 @@
 package rosalind
 
 import Stream._
+import scala.Int
 
 object LCS extends App with RosalindProblem {
 	def getMinLength(strings:List[String]):Int =
