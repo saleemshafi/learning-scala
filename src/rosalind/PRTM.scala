@@ -1,7 +1,7 @@
 package rosalind
 
 object PRTM extends App with RosalindProblem {
-  val monoisotopicMass = Map(
+  def monoisotopicMass = Map(
       'A' -> 71.03711,
       'C' -> 103.00919,
       'D' -> 115.02694,
