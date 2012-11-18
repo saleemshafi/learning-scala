@@ -3,24 +3,26 @@ package rosalind
 import Stream._
 
 object KMP extends App with RosalindProblem {
+
+  def suffixMatchLength(s: String, k: Int, prevLength: Int): Stream[Int] = {
+    if (k >= s.length) empty
+    else prevLength match {
+      case 0 => {
+        val l = if (s.head == s(k)) 1 else 0
+        l #:: suffixMatchLength(s, k + 1, l)
+      }
+      case _ => {
+        val prefix = s.view(0, prevLength + 1).mkString
+        val suffix = s.view(k - prevLength, k + 1).mkString 
+        if (prefix.equals(suffix))
+          (prevLength + 1) #:: suffixMatchLength(s, k + 1, prevLength + 1)
+        else
+          suffixMatchLength(s, k, prevLength - 1)
+      }
+    }
+  }
   
-	def getIndexesFromEnd(needle:String, haystack:String):Stream[Int] = {
-	  val lastIndex = haystack.lastIndexOf(needle)
-	  if (lastIndex == -1) empty
-	  else if (lastIndex == 0) lastIndex #:: empty
-	  else lastIndex #:: getIndexesFromEnd(needle, haystack.substring(0, lastIndex));
-	}
-  
-	def suffixMatchLength(s:String):Int = 
-	  (for (index <- getIndexesFromEnd(s.takeRight(1), s.init); 
-			  prefix = s.take(index+1);
-			  if (s.endsWith(prefix))) yield prefix) match {
-	  		case Stream() => 0
-	  		case firstMatch #:: more => firstMatch.length
-		}
-  
-	def failureArray(dna: String): Seq[Int] =
-	  for (k <- 1 to dna.length) yield suffixMatchLength(dna.take(k))
+	def failureArray(dna: String): Stream[Int] = 0 #:: suffixMatchLength(dna, 1, 0)
 
 	def failureArrayAsString(dna: String): String =
 	  failureArray(dna).mkString(" ")

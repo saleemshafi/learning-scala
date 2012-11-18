@@ -7,7 +7,7 @@ object REVP extends App with RosalindProblem {
 	}
   
 	def getPalindromeLocations(str:String): List[(Int, String)] = 
-	  for (p <- getPalindromes().toList; i <- KMP.getIndexesFromEnd(p, str)) yield (i, p)
+	  for (p <- getPalindromes().toList; i <- ORF.getIndexesFromEnd(p, str)) yield (i, p)
   
 	getInput("REVP.input").foreach( str => {
 	  getPalindromeLocations(str).sortBy(p => p._1)(Ordering.Int).foreach( palLoc => {
