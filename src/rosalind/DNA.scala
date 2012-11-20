@@ -9,8 +9,13 @@ object DNA extends App with RosalindProblem {
 	  }
 	}
 
-	def countNucleotides(dna: String): String = 
-	  (pack((dna toList) sorted) map (n => n.length)).mkString(" ")
+	def countNucleotides(dna: String): Map[Char, Int] = 
+	  (pack((dna toList) sorted) map (n => (n.head -> n.length))).toMap
+	
+	def countNucleotidesAsString(dna: String): String = {
+	  val counts = countNucleotides(dna)
+	  counts('A')+" "+counts('C')+" "+counts('G')+" "+counts('T')
+	}
 
-	runWithInput("DNA.input")(countNucleotides)
+	runWithInput("DNA.input")(countNucleotidesAsString)
 }
