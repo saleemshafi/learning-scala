@@ -15,6 +15,9 @@ object REAR extends App with RosalindProblem {
     beginning.reverse ++ end
   } 
 
+  def getNumReversals[T](start:List[T], end:List[T]):Int =
+    getNumReversals(start, end, 0)
+    
   def getNumReversals[T](start:List[T], end:List[T], permsSoFar:Int):Int = 
     stripCommonPrefix(start, end) match {
     	case (Nil, Nil) => permsSoFar
