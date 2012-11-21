@@ -11,4 +11,6 @@ object CONV extends App with RosalindProblem {
   def minkowskiDifferenceMap(s1:MultiSet[BigDecimal], s2:MultiSet[BigDecimal]):Map[BigDecimal, Int] = 
     minkowskiDifference(s1, s2).groupBy(identity) map { case (item, list) => (item -> list.length)}
   
+  def maxOccurring(ms:MultiSet[BigDecimal]):(BigDecimal, Int) = 
+    (ms.groupBy(identity) map { case (item, list) => (item -> list.length)}) maxBy (item => item._2)
 }
