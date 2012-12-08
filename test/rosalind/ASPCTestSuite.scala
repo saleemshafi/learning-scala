@@ -11,6 +11,7 @@ class ASPCTestSuite extends FunSuite {
   }
 
   test("permutations with real data") {
-	expect(42) { sumCombos(1606, 618, 1000000)}
+	expect(586368) { sumCombos(1606, 618, 1000000)}
+	expect(324344) { sumCombos(1734, 1315, 1000000)}
   }
 }
