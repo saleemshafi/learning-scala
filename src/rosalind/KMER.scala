@@ -2,8 +2,11 @@ package rosalind
 
 object KMER extends App with RosalindProblem {
   
+	def kmers(dna: String)(k: Int):List[String] =
+	  dna.sliding(k).toList
+  
 	def kmerCounts(dna: String)(k: Int):Map[String, Int] = 
-	  dna.sliding(k).toList.groupBy(identity).map(e => (e._1 -> e._2.length)) withDefaultValue 0
+	  kmers(dna)(k).toList.groupBy(identity).map(e => (e._1 -> e._2.length)) withDefaultValue 0
 	
 	def kmerComposition(dna: String)(k: Int):List[Int] = {
 	  val counts = kmerCounts(dna)(k)
