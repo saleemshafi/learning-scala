@@ -17,7 +17,14 @@ object NWCK extends App with RosalindProblem {
 	        case ')' => parse(newick.tail, current.parent)
 	        case ',' => parse(newick.tail, current.addSibling)
 	        case '(' => parse(newick.tail, current.addChild)
-	        case c => "[();,]".r.findFirstMatchIn(newick.tail) match {
+	        case ':' => "[():;,]".r.findFirstMatchIn(newick.tail) match {
+	            case None => null
+	            case Some(m) => {
+	              current.weight = Integer.parseInt(newick.tail.substring(0, m.start))
+	              parse(newick.tail.substring(m.start), current)
+	            }
+	          }
+	        case c => "[():;,]".r.findFirstMatchIn(newick.tail) match {
 	            case None => null
 	            case Some(m) => {
 	              current.name = c+newick.tail.substring(0, m.start)
@@ -31,12 +38,15 @@ object NWCK extends App with RosalindProblem {
   }
   
   class Tree(val root: Node) {
+	  def weightSums(nodes:List[Node]):Int =
+	    nodes.foldLeft(0)((w,n) => n.weight + w)
+    
 	  def distance(a: String, b: String): Int = (this.root.find(a), this.root.find(b)) match {
 	    case (Some(aNode), Some(bNode)) => {
 	      val aParents = aNode.parents
 	      val bParents = bNode.parents
 	      val incommon = (aParents intersect bParents)
-	      (aParents filterNot (incommon contains)).length + (bParents filterNot (incommon contains)).length
+	      weightSums(aParents filterNot (incommon contains)) + weightSums(bParents filterNot (incommon contains))
 	    }
 	    case _ => -1
 	  }
@@ -44,6 +54,7 @@ object NWCK extends App with RosalindProblem {
   
   class Node(val parent:Node) {
     var name = "node-"+counter
+    var weight = 1
     var children = List[Node]()
     
     def this() = this(null)
@@ -53,8 +64,8 @@ object NWCK extends App with RosalindProblem {
       child
     }
     def addSibling = this.parent.addChild
-    def parents:List[String] = if (this.parent == null) List(this.name)
-    							else this.name :: this.parent.parents
+    def parents:List[Node] = if (this.parent == null) List(this)
+    							else this :: this.parent.parents
 	def find(name:String): Option[Node] = 
     	if (name.equals(this.name)) {
     		Some(this)
