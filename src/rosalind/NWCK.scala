@@ -50,6 +50,12 @@ object NWCK extends App with RosalindProblem {
 	    }
 	    case _ => -1
 	  }
+	  
+	  def characterTable:List[String] = {
+	    val taxa = this.root.allLeaves.sorted(Ordering.String)
+	    var characters = this.root.characters
+	    (for (ch <- characters) yield taxa.map( t => if (ch.contains(t)) '1' else '0' ).mkString).toList
+	  }
   }
   
   class Node(val parent:Node) {
@@ -76,5 +82,20 @@ object NWCK extends App with RosalindProblem {
     		  case find::_ => Some(find)
     		}
     	}
+    
+    def allLeaves:List[String] = this.children match {
+      case Nil => List(this.name)
+      case _ => for (child <- this.children; leaf <- child.allLeaves) yield leaf
+    }
+    
+    def isLeaf = children.length == 0
+    
+    def characters: List[Set[String]] = {
+      val nonLeaves = for (n <- this.children; if (!n.isLeaf)) yield n
+      val theseCharacters = for (n <- nonLeaves) yield n.allLeaves.toSet
+      val subCharacters = for (n <- nonLeaves; c <- n.characters) yield c
+      
+      (theseCharacters ++ subCharacters).toList
+    }
   }
 }
