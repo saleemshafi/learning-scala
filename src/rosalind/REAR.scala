@@ -51,23 +51,26 @@ object REAR extends App with RosalindProblem {
 	    		  }
     }
 
-  def getNumReversals(sigma:Permutation, tau:Permutation):Int = {
+  def getReversals(sigma:Permutation, tau:Permutation):List[(Int,Int)] = {
     
     @tailrec
-    def getNumReversals(revCount:Int, perms:List[(Permutation, List[Breakpoint])]):Int = perms match {
-      case Nil => -1
-      case (perm, Nil)::anything => revCount
+    def getIdentityReversals(perms:List[(Permutation, List[(Int, Int)], List[Breakpoint])]):List[(Int, Int)] = perms match {
+      case Nil => Nil
+      case (perm, reversals, Nil)::anything => reversals
       case _ => {
-      	val allRevsPlusBPs = (for ((pi, bps) <- perms; (start, end) <- breakpointCombos(bps); r = reverse(pi, start-1, end-1)) 
-      	  yield (r, breakpoints(r)))
-      	val minLength = (allRevsPlusBPs minBy (a => a._2.length))._2.length
-        val candidates = (for (rbp <- allRevsPlusBPs; if (rbp._2.length == minLength) )
-          yield (rbp._1, rbp._2))
-        getNumReversals(revCount + 1, candidates.removeDuplicates)
+      	val allRevsPlusBPs = (for ((pi, prevRevs, bps) <- perms; (start, end) <- breakpointCombos(bps); r = reverse(pi, start-1, end-1)) 
+      	  yield (r, prevRevs:+(start, end), breakpoints(r)))
+      	val minLength = (allRevsPlusBPs minBy (a => a._3.length))._3.length
+        val candidates = (for (rbp <- allRevsPlusBPs; if (rbp._3.length == minLength) )
+          yield (rbp._1, rbp._2, rbp._3))
+        getIdentityReversals(candidates.removeDuplicates)
       }
     }
     
     val pi = applyPermutation(sigma, inversePermutation(tau))
-    getNumReversals(0, List((pi, breakpoints(pi))))
+    getIdentityReversals(List((pi, Nil, breakpoints(pi))))
+  }
+  def getNumReversals(sigma:Permutation, tau:Permutation):Int = {
+    getReversals(sigma, tau).length
   }
 }
