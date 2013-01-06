@@ -1,7 +1,5 @@
 package rosalind
 
-import rosalind.SPEC._
-
 object NWCK extends App with RosalindProblem {
   var _counter = 0
   def counter:Int = {
@@ -52,10 +50,11 @@ object NWCK extends App with RosalindProblem {
 	  }
 	  
 	  def characterTable:List[String] = {
-	    val taxa = this.root.allLeaves.sorted(Ordering.String)
 	    var characters = this.root.characters
-	    (for (ch <- characters) yield taxa.map( t => if (ch.contains(t)) '1' else '0' ).mkString).toList
+	    (for (ch <- characters) yield this.taxa.map( t => if (ch.contains(t)) '1' else '0' ).mkString).toList
 	  }
+	  
+	  def taxa = this.root.allLeaves.sorted(Ordering.String)
   }
   
   class Node(val parent:Node) {

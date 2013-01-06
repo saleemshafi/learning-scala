@@ -1,26 +1,26 @@
 package rosalind
 
 import org.scalatest.FunSuite
-import rosalind.CONV._
 import scala.collection.mutable.Stack
- 
-class QRTTestSuite extends FunSuite {
-  def getTaxa(character:String, names:List[String]):(List[String], List[String]) = {
-    (character zipWithIndex).foldLeft((List[String](), List[String]())) { 
+
+object QRTTestSuite extends FunSuite {
+  def getTaxa(character: String, names: List[String]): (List[String], List[String]) = {
+    (character zipWithIndex).foldLeft((List[String](), List[String]())) {
       case (l, ('x', i)) => l
       case (l, ('1', i)) => (names(i) +: l._1, l._2)
       case (l, ('0', i)) => (l._1, names(i) +: l._2)
     }
   }
-  
-  def getQuartets(names:List[String], characters:List[String]):Set[Set[Set[String]]] = {
-    (for (c <- characters; 
-    		(in, out) = getTaxa(c, names);
-    		pi <- in.combinations(2);
-    		po <- out.combinations(2))
-      yield Set(Set(pi(0), pi(1)), Set(po(0), po(1)))).toSet
+
+  def getQuartets(names: List[String], characters: List[String]): Set[Set[Set[String]]] = {
+    (for (
+      c <- characters;
+      (in, out) = getTaxa(c, names);
+      pi <- in.combinations(2);
+      po <- out.combinations(2)
+    ) yield Set(Set(pi(0), pi(1)), Set(po(0), po(1)))).toSet
   }
-  
+
   test("quartets with data from problem") {
     val data = """cat dog elephant ostrich mouse rabbit robot
 01xxx00
@@ -28,20 +28,21 @@ x11xx00
 111x00x""".split("\r\n").toList
     val names = data.head.split(" ").toList
     val characters = data.tail
-    
-    val quartets = getQuartets(names, characters) 
+
+    val quartets = getQuartets(names, characters)
     quartets foreach {
-      q => {
-    	  val ql = q.toList
-    	  println("{%s} {%s}".format(ql.head.mkString(", "), ql.last.mkString(", ")))  
-      }
+      q =>
+        {
+          val ql = q.toList
+          println("{%s} {%s}".format(ql.head.mkString(", "), ql.last.mkString(", ")))
+        }
     }
-    
+
     expect(4) { quartets.size }
-    assert( quartets.contains(Set(Set("dog", "elephant"),Set("rabbit","robot"))) )
-    assert( quartets.contains(Set(Set("cat", "dog"),Set("mouse","rabbit"))) )
-    assert( quartets.contains(Set(Set("cat","elephant"),Set("mouse", "rabbit"))) )
-    assert( quartets.contains(Set(Set("dog", "elephant"),Set("mouse","rabbit"))) )
+    assert(quartets.contains(Set(Set("dog", "elephant"), Set("rabbit", "robot"))))
+    assert(quartets.contains(Set(Set("cat", "dog"), Set("mouse", "rabbit"))))
+    assert(quartets.contains(Set(Set("cat", "elephant"), Set("mouse", "rabbit"))))
+    assert(quartets.contains(Set(Set("dog", "elephant"), Set("mouse", "rabbit"))))
   }
 
   test("quartets with real data") {
@@ -63,12 +64,13 @@ x01x1x1x1xx10xxx1x
 111xx1x101111011x1""".split("\r\n").toList
     val names = data.head.split(" ").toList
     val characters = data.tail
-    
+
     getQuartets(names, characters) foreach {
-      q => {
-    	  val ql = q.toList
-    	  println("{%s} {%s}".format(ql.head.mkString(", "), ql.last.mkString(", ")))  
-      }
+      q =>
+        {
+          val ql = q.toList
+          println("{%s} {%s}".format(ql.head.mkString(", "), ql.last.mkString(", ")))
+        }
     }
   }
 }
